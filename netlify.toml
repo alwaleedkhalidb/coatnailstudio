@@ -1,0 +1,16 @@
+[build]
+  publish = "."
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# daily digest to Rinad, ~10:00 Oman time (06:00 UTC)
+[functions."cron"]
+  schedule = "0 6 * * *"
+
+[[headers]]
+  for = "/studio"
+  [headers.values]
+    X-Robots-Tag = "noindex"

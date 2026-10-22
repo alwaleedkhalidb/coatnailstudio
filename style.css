@@ -19,7 +19,7 @@ nav a.l{font-size:.9rem;text-decoration:none}
 .stage{position:sticky;top:0;height:100svh;overflow:hidden;display:grid;place-items:center;text-align:center}
 .mark{--ls:-.02em;font-size:clamp(4rem,22vw,20rem);line-height:1;letter-spacing:var(--ls);padding-left:var(--ls);text-transform:none;will-change:transform}
 .sub{position:absolute;bottom:12vh;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:1.2rem;color:var(--mute)}
-.curtain{position:absolute;inset:0;background:var(--ink);color:var(--bg);display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:left;padding:0 5vw 12vh;transform:translateY(100%);will-change:transform}
+.curtain{position:absolute;inset:auto 0 0 0;background:var(--ink);color:var(--bg);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:clamp(2.2rem,5.5vw,3.4rem) 5vw;transform:translateY(100%);will-change:transform}
 .curtain p{font:400 clamp(2rem,6.4vw,5.5rem)/1.08 'Bodoni Moda',serif;margin:0 0 2rem;max-width:16em}
 section{padding:clamp(5rem,12vw,10rem) 5vw}
 .wrap{max-width:1100px;margin:0 auto}
@@ -123,19 +123,20 @@ h3,.pol h3,.sub span{font-family:var(--fs);font-synthesis:none;text-transform:no
 .pol h3{font-size:1.9rem}
 .sub span{font-size:1.9rem}
 .logo{letter-spacing:.04em}
-.curtain p{font-family:var(--fs);font-size:clamp(2.2rem,6vw,4.6rem);line-height:1.2}
+.curtain p{font-family:var(--fs);font-size:clamp(1.6rem,4.2vw,3rem);line-height:1.75;margin:0 0 1.4rem;max-width:20em}
 .find{font-family:var(--fx)}
 
 .gal figure:hover img{scale:1.06}
 .gal img{transition:scale .9s cubic-bezier(.2,.7,.2,1)}
-.g3{position:relative;margin-top:2rem;overflow:hidden;padding:1.5rem 0 1rem}
-.gbg{position:absolute;inset:0;z-index:0}
-.gbg img{position:absolute;inset:-15%;width:130%;height:130%;object-fit:cover;filter:blur(70px) saturate(1.5);opacity:0;transition:opacity 1.2s ease}
+.g3{position:relative;margin-top:2rem;overflow:clip;padding:1.5rem 0 2.4rem}
+.gbg{position:absolute;inset:0;z-index:0;overflow:hidden;display:grid;place-items:center;background:radial-gradient(68% 78% at 50% 42%,color-mix(in srgb,var(--tint,transparent) 46%,transparent),transparent 70%);transition:background .9s ease}
+.gbg img{position:absolute;width:260px;height:340px;object-fit:cover;filter:blur(8px) saturate(1.45);transform:scale(7);opacity:0;transition:opacity 1.2s ease;will-change:opacity}
 .gbg img.on{opacity:.55}
 .g3::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(var(--bg),transparent 22%,transparent 78%,var(--bg))}
 .gt{position:relative;z-index:2;display:flex;gap:1.6rem;overflow-x:auto;scroll-snap-type:x mandatory;perspective:1100px;padding:3rem calc(50% - min(36vw,190px));scrollbar-width:none;cursor:grab}
 .gt::-webkit-scrollbar{display:none}
 .gt.drag{scroll-snap-type:none;cursor:grabbing}
+.gt.nosnap{scroll-snap-type:none}
 .gc{flex:0 0 min(72vw,380px);aspect-ratio:3/4;scroll-snap-align:center;border:0;padding:0;background:none;border-radius:28px;cursor:inherit;will-change:transform}
 .gi{display:block;position:relative;width:100%;height:100%;border-radius:28px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.28);transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .3s ease}
 .gi img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none}
@@ -144,7 +145,7 @@ h3,.pol h3,.sub span{font-family:var(--fs);font-synthesis:none;text-transform:no
 .gui{position:relative;z-index:3;display:flex;justify-content:center;align-items:center;gap:1.4rem}
 .gui .cn{background:color-mix(in srgb,var(--bg) 60%,transparent);backdrop-filter:blur(6px)}
 .gn{font:400 1.7rem/1 var(--ft);min-width:5.5rem;text-align:center}
-.gcap{position:relative;z-index:3;text-align:center;font:400 2.3rem/1.2 var(--fs);margin:.6rem 0 0;min-height:3rem}
+.gcap{position:relative;z-index:3;text-align:center;font:400 2.3rem/1.9 var(--fs);margin:.4rem 0 0;padding:0 5vw .5rem;min-height:4.4rem;overflow:visible}
 .gcur{position:fixed;left:0;top:0;margin:-34px 0 0 -34px;width:68px;height:68px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font:.8rem var(--fx);pointer-events:none;opacity:0;transition:opacity .3s;z-index:35}
 .gcur.on{opacity:1}
 @media(hover:none){.gcur{display:none}}
@@ -171,3 +172,11 @@ h3,.pol h3,.sub span{font-family:var(--fs);font-synthesis:none;text-transform:no
 .tick circle{stroke-dasharray:151;stroke-dashoffset:151;animation:dr .9s ease forwards}
 .tick path{stroke-dasharray:40;stroke-dashoffset:40;animation:dr .5s .7s ease forwards}
 @keyframes dr{to{stroke-dashoffset:0}}
+
+/* gallery: tighter */
+.gx{padding-top:calc(env(safe-area-inset-top,0px) + 6.5rem);padding-bottom:clamp(2rem,5vw,3.5rem)}
+.gx .g3{margin-top:.8rem;padding:.4rem 0 0}
+.gx .gt{padding-top:1.8rem;padding-bottom:1.8rem}
+.gx .gcap{margin-top:0;min-height:4.4rem}
+.gx .gui{gap:1.2rem}
+.gx .wrap p.rv[style]{margin-top:1.4rem!important}
