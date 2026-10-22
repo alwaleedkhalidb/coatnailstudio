@@ -1,4 +1,4 @@
-const { r, token, authed, mail, list, pw } = require('./_lib');
+const { r, token, authed, mail, list, pw, customerMail } = require('./_lib');
 module.exports = async (q, s) => {
   if (q.method !== 'POST') return s.status(405).end();
   const b = q.body || {};
@@ -19,6 +19,7 @@ module.exports = async (q, s) => {
   if (b.action === 'status' && ['confirmed', 'done', 'cancelled'].includes(b.status)) {
     o.status = b.status;
     await r(['HSET', 'bookings', o.id, JSON.stringify(o)]);
+    if (b.status === 'confirmed' && o.em) { try { await customerMail(o, 'confirmed'); } catch (e) {} }
     if (b.status === 'cancelled') await r(['DEL', 'slot:' + o.d + '_' + o.t]);
   }
   if (b.action === 'remove') {
