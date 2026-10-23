@@ -11,7 +11,9 @@ export const json = (body, status = 200) =>
 
 // Upstash Redis over its REST API — works from any host.
 export const r = async (cmd) => {
-  const x = await fetch(URL_(), { method: 'POST', headers: { Authorization: 'Bearer ' + TOK() }, body: JSON.stringify(cmd) });
+  const u = URL_(), t = TOK();
+  if (!u || !t) throw new Error('DB_NOT_CONFIGURED: set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN, then redeploy');
+  const x = await fetch(u, { method: 'POST', headers: { Authorization: 'Bearer ' + t }, body: JSON.stringify(cmd) });
   const j = await x.json();
   if (j.error) throw new Error(j.error);
   return j.result;

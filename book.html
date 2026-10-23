@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Book | COAT Nail Studio</title><meta name="description" content="COAT Nail Studio. Gel, Gel X and extensions in Seeb, Oman."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/style.css"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Book an Appointment | COAT Nail Studio</title><meta name="description" content="Choose your service, pick a day and time, and book your nail appointment at COAT Nail Studio in Al-Maabilah, Al-Seeb."><link rel="canonical" href="https://coatnailstudio.com/book"><meta property="og:type" content="website"><meta property="og:site_name" content="COAT Nail Studio"><meta property="og:title" content="Book an Appointment | COAT Nail Studio"><meta property="og:description" content="Choose your service, pick a day and time, and book your nail appointment at COAT Nail Studio in Al-Maabilah, Al-Seeb."><meta property="og:url" content="https://coatnailstudio.com/book"><meta property="og:image" content="https://coatnailstudio.com/img/share.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="en_GB"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Book an Appointment | COAT Nail Studio"><meta name="twitter:description" content="Choose your service, pick a day and time, and book your nail appointment at COAT Nail Studio in Al-Maabilah, Al-Seeb."><meta name="twitter:image" content="https://coatnailstudio.com/img/share.jpg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/style.css"></head><body>
 <nav><a class="logo" href="/">COAT</a><a class="l" href="/services">services</a><a class="l" href="/gallery">gallery</a><a class="l" href="/about">about</a><a class="l" href="/policies">policies</a><a class="l" href="/find">find us</a><a class="btn f" href="/book">book</a></nav>
 <section class="pg" id="book"><div class="wrap"><div id="bh"><h1 class="ph rv">book</h1>
 <p class="note rv">Rinad confirms every booking by message. A 5 OMR deposit secures your time and goes toward your service.</p></div>
@@ -31,7 +31,14 @@ function cal(){const y=cm.getFullYear(),m=cm.getMonth(),n=new Date(y,m+1,0).getD
  for(let d=1;d<=n;d++){const D=new Date(y,m,d),s=iso(D);h+=`<button type="button" class="cd" data-d="${s}" aria-pressed="${sel==s}" ${D<t0||D>tmax?'disabled':''}>${d}</button>`}
  $('#cal').innerHTML=h+'</div>'}
 function drawS(){$('#sl').innerHTML=T.map(t=>`<button type="button" class="slot" data-t="${t}" aria-pressed="${slot==t}" ${tk.includes(t)||new Date(sel+'T'+t)<new Date()?'disabled':''}>${t}</button>`).join('')}
-async function slots(){const w=$('#tw');if(w.hidden){w.hidden=false;void w.offsetWidth;flow()}try{tk=(await(await fetch('/api/slots?date='+sel)).json()).taken}catch(e){tk=[]}drawS()}
+let slotReq=0;
+async function slots(){const w=$('#tw');if(w.hidden){w.hidden=false;void w.offsetWidth;flow()}
+ const my=++slotReq,day=sel;tk=[];drawS();
+ try{const c=new AbortController();const to=setTimeout(()=>c.abort(),8000);
+  const res=await fetch('/api/slots?date='+day,{signal:c.signal});clearTimeout(to);
+  const j=await res.json();
+  if(my===slotReq&&day===sel&&Array.isArray(j.taken)){tk=j.taken;drawS()}
+ }catch(e){}}
 $('#cal').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
  if(b.dataset.m){cm=new Date(cm.getFullYear(),cm.getMonth()+ +b.dataset.m,1);cal()}
  else if(b.dataset.d){sel=b.dataset.d;slot='';cal();await slots()}};
@@ -46,6 +53,7 @@ $('#f').onsubmit=async e=>{e.preventDefault();const ms=$('#ms');
  try{const r=await fetch('/api/book',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)});
   if(r.status==409){ms.textContent='Someone just booked that time. Pick another.';slot='';await slots();$('#go').disabled=false;return}
   if(r.status==429){ms.textContent='Too many requests. Please try again in an hour, or message us on Instagram.';$('#go').disabled=false;return}
+  if(r.status==503){ms.textContent='Bookings are temporarily unavailable. Please message us on Instagram, @coatnailstudio_.';$('#go').disabled=false;return}
   if(!r.ok)throw 0;
   const j=await r.json().catch(()=>({}));if(j.emailed){$('#emn').textContent='A copy was emailed to '+b.em+'.';$('#emn').hidden=false}
   const dt=new Date(b.d+'T'+b.t).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})+' at '+b.t;

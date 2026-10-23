@@ -4,10 +4,15 @@ export default async (req) => {
   if (req.method !== 'POST') return new Response(null, { status: 405 });
 
   // simple abuse guard: at most 8 requests per hour per visitor
-  const ip = String(req.headers.get('x-nf-client-connection-ip') || req.headers.get('x-forwarded-for') || 'local').split(',')[0].trim();
-  const n = await r(['INCR', 'rl:' + ip]);
-  if (n === 1) await r(['EXPIRE', 'rl:' + ip, 3600]);
-  if (n > 8) return json({ e: 'slow down' }, 429);
+  try {
+    const ip = String(req.headers.get('x-nf-client-connection-ip') || req.headers.get('x-forwarded-for') || 'local').split(',')[0].trim();
+    const n = await r(['INCR', 'rl:' + ip]);
+    if (n === 1) await r(['EXPIRE', 'rl:' + ip, 3600]);
+    if (n > 8) return json({ e: 'slow down' }, 429);
+  } catch (e) {
+    console.error('booking store unreachable:', e.message);
+    return json({ e: 'store' }, 503);
+  }
 
   const b = await req.json().catch(() => ({}));
   const c = (x) => String(x || '').slice(0, 200);
