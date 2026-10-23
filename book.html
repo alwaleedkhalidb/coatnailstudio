@@ -57,8 +57,13 @@ $('#f').onsubmit=async e=>{e.preventDefault();const ms=$('#ms');
   if(!r.ok)throw 0;
   const j=await r.json().catch(()=>({}));if(j.emailed){$('#emn').textContent='A copy was emailed to '+b.em+'.';$('#emn').hidden=false}
   const dt=new Date(b.d+'T'+b.t).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})+' at '+b.t;
-  const wu='https://wa.me/'+WA+'?text='+encodeURIComponent(`Hi Rinad, I’d like to book at COAT Nail Studio.\n\nService: ${b.s}, ${b.p} OMR\nDate: ${dt}\nName: ${b.n}\nWhatsApp: ${b.ph}${b.nt?'\nNotes: '+b.nt:''}\n\nPlease send me the deposit details so I can confirm my time.`);
-  $('#wa').href=wu;if(window.top===window)setTimeout(()=>{location.href=wu},1400);
+  const msg=encodeURIComponent(`Hi Rinad, I’d like to book at COAT Nail Studio.\n\nService: ${b.s}, ${b.p} OMR\nDate: ${dt}\nName: ${b.n}\nWhatsApp: ${b.ph}${b.nt?'\nNotes: '+b.nt:''}\n\nPlease send me the deposit details so I can confirm my time.`);
+  // wa.me bounces through a web page first, which is slow. On a phone the whatsapp://
+  // scheme hands straight to the app; keep wa.me as the link everything understands.
+  const waWeb='https://wa.me/'+WA+'?text='+msg, waApp='whatsapp://send?phone='+WA+'&text='+msg;
+  const onPhone=/android|iphone|ipad|ipod/i.test(navigator.userAgent);
+  $('#wa').href=waWeb;
+  if(window.top===window)setTimeout(()=>{location.href=onPhone?waApp:waWeb},700);
   $('#thx').textContent='Thank you, '+b.n.split(' ')[0]+'.';$('#oks').innerHTML=`<b>${esc(b.s)}</b><br>${esc(dt)}<br>${esc(b.p)} OMR`;
   $('#bh').hidden=true;$('#f').hidden=true;$('#ok').hidden=false;void $('#ok').offsetWidth;flow();scrollTo({top:0,behavior:'smooth'})
  }catch(x){ms.textContent='We couldn’t send your request. Message us on Instagram, @coatnailstudio_.';$('#go').disabled=false}};
